@@ -1,2 +1,55 @@
-# xml-generator
-Xml document generator
+# Xml Document Generator
+This is an xml document generator server that generates a random xml document per request as an http xml response. There are two implementations to get a document for now. You can use the following urls dedicated to each implementation separately as below:
+
+#### Random Xml:
+
+- Request url:
+  <code>
+      /get-random-xml?maxDepth=<b>25</b>&maxElementCountPerBranch=<b>35</b>&maxStringLength=<b>100</b>&random=<b>true</b>
+  </code>
+
+- <div>Parameters in detail:
+  <ul>
+    <li>
+      <b>maxDepth=&lt;integer&gt;:</b> Determines the maximum depth of the generated xml document node
+    </li>
+    <li>
+      <b>maxElementCountPerBranch=&lt;integer&gt;:</b> Determines the maximum element count per branch of the generated xml document node
+    </li>
+    <li>
+      <b>maxStringLength=&lt;integer&gt;:</b> Determines the maximum length of the strings of the [node | attribute | cdata | comment | free text] names and values
+    </li>
+    <li>
+      <b>random=&lt;boolean&gt;:</b> Determines whether the generated strings will be of some english words or completely random
+    </li>
+  </ul>
+</div>
+- <code>Note: This method only generates valid xml documents.</code>
+
+#### Random Xml by Microsoft Copilot:
+
+- Request url:
+  <code>
+      /get-random-xml-copilot
+  </code>
+
+- <div>Has no parameters</div>
+- <code>Note: This method can generate nested comment sections and undefined namespace prefixes by chance. This is by implementation of the generator at the moment. 
+  Because this server is being used for testing operations of the [xml parser](../../../xml-parser) project. 
+  So, the generated xml documents may not comply with XML Standard completely.</code>
+- <code>Note: This method currently generates valid xml documents by default. There is a severity level that determines whether the generated document will be valid or invalid when the generator creates a new document. You can change the severity level other than zero in the [server.js](/server.js) to get valid and invalid xml documents as below:</code>
+  ```js
+  else if(req.url.toLowerCase().startsWith('/get-random-xml-copilot')){
+
+    /* last parameter is the severity level.
+        Severity = 0                -> get a random valid document,
+        Severity between 1 and 10   -> get a random valid or invalid document by chance,
+    */
+    var generatedXMLDocument = xmlGeneratorByCopilot.generateRandomXML(40, 10, 0);
+    
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "text/xml");
+    res.write(generatedXMLDocument);
+    res.end();
+  }
+  ```
