@@ -1,0 +1,108 @@
+<html>
+<head>
+<script type="text/javascript" src="random-xml-generator.js"></script>
+</head>
+
+<body>
+
+<textarea id="generatedXML" style="width:100%;height:100%;display:block;"></textarea>
+
+<script type="text/javascript">
+var _0x192720 = _0x128d;
+
+function generateRandomXML(options){
+
+	var maxDepth = options['maxDepth'], 
+		maxElementCountPerBranch = options['maxElementCountPerBranch'],
+		xmlContainerId = options['xmlContainerId'],
+		maxStringLength = options['maxStringLength'],
+		random = options['random'];
+		
+	var _0x2bfcda = _0x192720;
+
+	var _0x1cb5c5 = random;
+	
+	if (_0x1cb5c5){
+		var _0x50d290 = _0x2bfcda(0x7b4);  //'random'
+	}
+	else{
+		var _0x50d290 = _0x2bfcda(0xa8c);  //'english'
+	} 
+	
+	var _0x2e76db = new RandomJsonGenerator({
+            'maxDepth': maxDepth,
+            'satisfyDepth': 'false',
+            'elementsPerBranch': maxElementCountPerBranch,
+            'stringType': _0x50d290, 
+            'possibleElements': ['strings', _0x2bfcda(0x563), _0x2bfcda(0xcfa)],  
+            'randomKeyAlphabet': '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_-abcdefghijklmnopqrstuvwxyz',
+            'randomKeyRestrictions': [_0x2bfcda(0x3d8), _0x2bfcda(0xc5c)], 
+            'maxStringLength': maxStringLength
+	}),
+	
+	_0x32411f = '\x20\x20';  //indentation
+
+	var _0x264448 = _0x2e76db[_0x2bfcda(0xbbf)]();  //_0x2bfcda(0xbbf) --> 'generate'
+
+    var _0x4c3ddc = json2xml(_0x264448),
+        _0x91b482 = null,
+        _0x44eb79 = 'root';
+   
+    _0x4c3ddc = '<' + _0x44eb79 + '>' + _0x4c3ddc + '</' + _0x44eb79 + '>';
+	
+   if (window['DOMParser']) {
+        var _0x51e7e4 = new DOMParser();
+        _0x91b482 = _0x51e7e4[_0x2bfcda(0x815)](_0x4c3ddc, 'text/xml');  //_0x2bfcda(0x815) -> 'parseFromString'
+		console.log(_0x2bfcda(0xd44));
+    } 
+	else{
+		_0x91b482 = new ActiveXObject(_0x2bfcda(0x501));
+		_0x91b482['async'] = ![], 
+		_0x91b482['loadXML'](_0x4c3ddc);
+	}
+
+    var _0x492419 = _0x91b482[_0x2bfcda(0xb49)],	// _0x2bfcda(0xb49) -> 'documentElement'
+        _0x3339ae = _0x492419[_0x2bfcda(0xd09)]('*');  //_0x2bfcda(0xd09) -> 'querySelectorAll'
+		
+    for (var _0x45b0dd = 0x0; _0x45b0dd < _0x3339ae[_0x2bfcda(0x586)]; _0x45b0dd++) {  // _0x2bfcda(0x586) -> 'length'
+        
+		var _0x5bf627 = _0x3339ae[_0x45b0dd];
+		
+        if (true && chance(0.5)) {
+            var _0xa4011d = WordDictionary['random'](),
+                _0x5776dc = WordDictionary[_0x2bfcda(0x7b4)]();
+            _0x5bf627[_0x2bfcda(0x19d)](_0xa4011d, _0x5776dc);   //_0x2bfcda(0x19d) -> 'setAttribute'
+        }
+        if (true && chance(0.25)) {
+            var _0x3f9b31 = _0x91b482[_0x2bfcda(0x480)](sentence());  //_0x2bfcda(0x480) -> 'createCDATASection'
+            insertRandomly(_0x3f9b31, _0x5bf627);
+        }
+        if (true && chance(0.25)) {
+            var _0x400a9b = _0x91b482['createComment'](sentence());
+            insertRandomly(_0x400a9b, _0x5bf627);
+        }
+    }
+	
+	var _0x352dc1 = _0x492419['outerHTML'];
+ 
+	_0x352dc1 = _0x2bfcda(0xb3b) 	// '<?xml version="1.0" encoding="UTF-8" ?>'
+				+ 
+				_0x352dc1;  // generated xml document
+	
+    let resultXMLDocumentAsString = vkbeautify[_0x2bfcda(0xcbe)](_0x352dc1, _0x32411f);
+	
+	document.getElementById(xmlContainerId).value = resultXMLDocumentAsString;
+}
+
+generateRandomXML(
+	{
+		'maxDepth' : 25, 
+		'maxElementCountPerBranch': 35, 
+		'maxStringLength' : 100,
+		'random' : true,
+		'xmlContainerId' : 'generatedXML'
+	}
+);
+</script>
+</body>
+</html>

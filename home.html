@@ -1,0 +1,47 @@
+<html>
+<body>
+	<h3>Random XML Generator</h3>
+	<h4> Use one of the following urls to get random xml documents: </h4>
+	<ul>
+		<li>
+			<h3><b>/get-random-xml?maxDepth=&lt;integer&gt;&maxElementCountPerBranch=&lt;integer&gt;&maxStringLength=&lt;integer&gt;&random=&lt;boolean&gt;</b></h3>
+			
+			<div><b>Example:</b> <a href="/get-random-xml?maxDepth=25&maxElementCountPerBranch=35&maxStringLength=100&random=true">/get-random-xml?maxDepth=<b>25</b>&maxElementCountPerBranch=<b>35</b>&maxStringLength=<b>100</b>&random=<b>true</b></a></div>
+			<br></br>
+			<div>Parameters in detail:
+				<ul>
+					<li>
+						<b>maxDepth=&lt;integer&gt;:</b> Determines the maximum depth of the generated xml document node
+					</li>
+					<li>
+						<b>maxElementCountPerBranch=&lt;integer&gt;:</b> Determines the maximum element count per branch of the generated xml document node
+					</li>
+					<li>
+						<b>maxStringLength=&lt;integer&gt;:</b> Determines the maximum length of the strings of the [node | attribute | cdata | comment | free text] names and values
+					</li>
+					<li>
+						<b>random=&lt;boolean&gt;:</b> Determines whether the generated strings will be of some english words or completely random
+					</li>
+					
+				</ul>
+			</div>
+			
+		</li>
+		
+		<li>
+			<h3><b>/get-random-xml-copilot</b></h3>
+			
+			<div><b>Example:</b> <a href="/get-random-xml-copilot">/get-random-xml-copilot</a></b></div>
+			
+			<br></br>
+			
+			<div>Has no parameters</div>
+			
+			<h4>
+				Note: This method can generate nested comment sections and undefined namespace prefixes by chance. This is by implementation of the generator at the moment. 
+				Because this server is being used for testing operations of an xml validator. 
+				So, the generated xml documents may not comply with XML Standard completely.</h4>
+		</li>
+	</ul>
+</body>
+</html>
