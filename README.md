@@ -1,5 +1,5 @@
 # Xml Document Generator
-This is an xml document generator server that generates a random xml document per request as an http xml response. There are two implementations to get a document for now. You can use the following urls dedicated to each implementation separately as below:
+This is an xml document generator server that generates a random xml document per request as an http xml response. This project is being used for automated testing purposes of the [xml parser](../../../xml-parser) project. There are two implementations to get a document for now. You can use the following urls dedicated to each implementation separately as below:
 
 #### Random Xml:
 
@@ -53,3 +53,15 @@ This is an xml document generator server that generates a random xml document pe
     res.end();
   }
   ```
+#### Running & Configuration:
+You need a working nodejs executable to run the server. You need to extract the <code>node_modules.zip</code> into the project root folder before running the server. Afterwards, you can start the server with a port number from the command line in the project root folder as below: 
+<br/><br/>
+<code>node server.js 3000</code>
+<br/><br/>
+You should see the following output when the server starts successfully:
+<br/><br/>
+<code>Server running at `http://localhost:3000/`</code>
+
+After this point, you can access the xml generation urls over this url.
+
+<code>Note: Project is tested on nodejs v24.12.0-win-x64.</code>
