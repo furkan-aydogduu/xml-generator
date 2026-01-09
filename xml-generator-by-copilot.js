@@ -87,7 +87,7 @@ function randomAttributeValue(length = 8, severity = 0, quote, closeComment = fa
 
 	if(!closeComment){
 		_randomAttributeValue = _randomAttributeValue.replaceAll(/-[\n\r]*-[\n\r]*>/g, "+");
-		_randomAttributeValue = _randomAttributeValue.replaceAll(/-[\n\r]*-[\n\r]*$/g, "+");
+		_randomAttributeValue = _randomAttributeValue.replaceAll(/-[\n\r]*-[\n\r]*/g, "+");
 	}
 	
 	if(!closeCData){
@@ -154,7 +154,7 @@ function randomText(length = 8, severity = 0, closeComment = false, closeCData =
 
 	if(!closeComment){
 		_randomText = _randomText.replaceAll(/-[\n\r]*-[\n\r]*>/g, "+");
-		_randomText = _randomText.replaceAll(/-[\n\r]*-[\n\r]*$/g, "+");
+		_randomText = _randomText.replaceAll(/-[\n\r]*-[\n\r]*/g, "+");
 	}
 	
 	if(!closeCData || (closeCData && closeComment)){
@@ -214,7 +214,7 @@ function randomAttributeName(length = 8, closeComment = true, closeCData = true)
 	var startCharRangeLength = validAsciiStartNameCharCodeRanges.length;
 	var nameCharRangeLength = validAsciiNameCharCodeRanges.length;
 
-	let name = Array.from({ length : length - 1 }, (value, index) => {
+	let name = Array.from({ length }, (value, index) => {
 		
 		if(index === 0){
 			let startCharRangeIndex = randomInt(0, startCharRangeLength - 1);
@@ -237,7 +237,7 @@ function randomAttributeName(length = 8, closeComment = true, closeCData = true)
 
 	if(!closeComment){
 		name = name.replaceAll(/-[\n\r]*-[\n\r]*>/g, "+");
-		name = name.replaceAll(/-[\n\r]*-[\n\r]*$/g, "+");
+		name = name.replaceAll(/-[\n\r]*-[\n\r]*/g, "+");
 	}
 	
 	if(!closeCData || (closeCData && closeComment)){
@@ -294,7 +294,9 @@ function randomDoctype(severity) {
 function randomAttributes(severity = 0, closeComment = false, closeCData = false) {
 	const attrCount = randomInt(0, 4);
 	let attrs = "";
-
+	
+	var keys = [];
+	
 	for (let i = 0; i < attrCount; i++) {
 		var quote = "";
 		
@@ -317,15 +319,28 @@ function randomAttributes(severity = 0, closeComment = false, closeCData = false
 			}
 		}
 		
-		const corruptKey = severity > 0 && chance(severity, 0.4);
+		var key = "";
 		
-		const key = !corruptKey ? randomAttributeName(randomInt(3, 10), closeComment, closeCData)
-		: randomAttributeValue(randomInt(3, 10), severity, quote, closeComment, closeCData);
+		if(severity === 0){
 
+			do{
+				key = randomAttributeName(randomInt(3, 10), closeComment, closeCData);
+			}
+			while(keys.includes(key));
+		}
+		else{
+			const corruptKey = chance(severity, 0.4);
+			
+			key = !corruptKey ? randomAttributeName(randomInt(3, 10), closeComment, closeCData)
+							  : randomAttributeValue(randomInt(3, 10), severity, quote, closeComment, closeCData);
+		}
+		
+		keys.push(key);
+		
 		let value = randomAttributeValue(randomInt(3, 10), severity, quote, closeComment, closeCData);
 
 		//  EXTREME COMMENT CORRUPTION (severity-scaled)
-		if (severity > 0 && chance(severity, 0.7)) {
+		if (closeComment && chance(severity, 0.7)) {
 		
 			const commentPieces = [];
 
@@ -430,7 +445,7 @@ function recursiveCommentValid(depth, maxDepth, initialSeverity = 0, severity = 
 	
 	const _depth = randomInt(1, Math.max(1, Math.floor(severity / 2)));
 
-	out = " <!-- ";
+	out = ` <!${(closeComment ? '--' : '')} `;
 
 	//  Simulated recursive comment layers (never real nested comments)
 	for (let i = 0; i < _depth; i++) {
@@ -523,7 +538,7 @@ function randomComment(depth, maxDepth, initialSeverity = 0, severity = 0, close
 			` Note:${randomString(6)}-${randomString(6)} `
 		];
 
-		out = ` <!-- ${sentences.slice(0, randomInt(2, 5)).join(" | ")} `;
+		out = ` <!${(closeComment ? '--' : '')} ${sentences.slice(0, randomInt(2, 5)).join(" | ")} `;
 		
 		var closeCommentChance = initialSeverity === 0 ? closeComment : (Math.random() > 0.5 ? true : false);
 		var closeCDataChance = initialSeverity === 0 ? closeCData : (Math.random() > 0.5 ? true : false);
@@ -719,7 +734,7 @@ function randomMixedContent(depth, maxDepth, initialSeverity = 0, severity = 0, 
 	  parts.push(recursiveCdata(severity, closeCData));
 	}
 
-	if (severity > 0 && chance(severity, 0.5)) {
+	if (chance(severity, 0.5)) {
 	  parts.push(recursiveCdataBreakout(severity, closeCData, closeComment));
 	}
 
@@ -743,11 +758,11 @@ function recursiveCdataBreakout(severity, closeCData = false, closeComment = fal
   // Now the breakout corruption
 	if (severity > 0) {
 		const breakoutFragments = [
-		  ` ${(closeCData ? ']]>' : '')} <broken tag="${randomString(5)}"> <!--oops${(closeComment ? '-->' : '')} `,
+		  ` ${(closeCData ? ']]>' : '')} <broken tag="${randomString(5)}"> <!${(closeComment ? '--' : '')} oops${(closeComment ? '-->' : '')} `,
 		  ` ${(closeCData ? ']]>' : '')} </fake${randomInt(1,99)}> <![CDATA[ `,
 		  ` ${(closeCData ? ']]>' : '')} <${randomString(5)} bad="true"> `,
-		  ` ${(closeCData ? ']]>' : '')} <!-- corrupted ${(closeComment ? '-->' : '')} <${randomString(4)}> `,
-		  ` ${(closeCData ? ']]>' : '')} <inject attr="<!--${randomString(5)}${(closeComment ? '-->' : '')}"> `
+		  ` ${(closeCData ? ']]>' : '')} <!${(closeComment ? '--' : '')} corrupted ${(closeComment ? '-->' : '')} <${randomString(4)}> `,
+		  ` ${(closeCData ? ']]>' : '')} <inject attr="<!${(closeComment ? '--' : '')}${randomString(5)}${(closeComment ? '-->' : '')}"> `
 		];
 
 		const maxIndex = Math.min(
@@ -783,10 +798,10 @@ function recursiveComment(severity = 0, closeComment = true) {
 	
 	const depth = randomInt(1, Math.max(1, Math.floor(severity / 2)));
 
-	let comment = " <!-- ";
+	let comment = ` <!${(closeComment ? '--' : '')} `;
 
 	for (let i = 0; i < depth; i++) {
-		comment += ` level${i} <!-- `;
+		comment += ` level${i} <!${(closeComment ? '--' : '')} `;
 	}
 	
 	comment += ` ${randomString(randomInt(10, 80))} `;
@@ -796,7 +811,7 @@ function recursiveComment(severity = 0, closeComment = true) {
 		
 		if(closeCommentChance > 0.5){
 			for (let i = 0; i < depth; i++) {
-				comment += " --> \n ";
+				comment += ` --> \n `;
 			}
 		}
 	}
@@ -847,8 +862,8 @@ function generateNode(depth, maxDepth, maxChildren, initialSeverity = 0, severit
 	const name = randomTagWord(20, severity, closeComment, closeCData);
 	const attrs = randomAttributes(severity, closeComment, closeCData);
 
-	const corruptOpen = severity > 0 && chance(severity, 0.4);
-	const corruptClose = severity > 0 && chance(severity, 0.4);
+	const corruptOpen = chance(severity, 0.4);
+	const corruptClose = chance(severity, 0.4);
 	
 	var isEmptyElement = false;
 	
@@ -935,7 +950,7 @@ function generateNode(depth, maxDepth, maxChildren, initialSeverity = 0, severit
 		}
 	}
 	
-	if (Math.random() > 0.7 && depth < maxDepth) {
+	if (depth < maxDepth && Math.random() > 0.7) {
 		xml += `  ${randomComment(depth + 1, maxDepth, initialSeverity, severity, closeComment, closeCData)} `;
 	}
 	
@@ -995,8 +1010,8 @@ function generateRandomXML(maxDepth = 3, maxChildren = 3, severity = 0) {
 	const name = randomTagWord(20, severity, closeComment, closeCData);
 	const attrs = randomAttributes(severity, closeComment, closeCData);
 	
-	const corruptOpen = severity > 0 && chance(severity, 0.4);
-	const corruptClose = severity > 0 && chance(severity, 0.4);
+	const corruptOpen = chance(severity, 0.4);
+	const corruptClose = chance(severity, 0.4);
 	
 	var isEmptyElement = false;
 	
