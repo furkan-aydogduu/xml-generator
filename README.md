@@ -34,7 +34,7 @@ This is an xml document generator server that generates a random xml document pe
   </code>
 
 - <div>Has no parameters</div>
-- <code>Note: This method can generate nested comment sections and undefined namespace prefixes by chance. This is by implementation of the generator at the moment. 
+- <code>Note: This method can generate undefined namespace prefixes by chance. This is by implementation of the generator at the moment. 
   Because this server is being used for testing operations of the [xml parser](../../../xml-parser) project. 
   So, the generated xml documents may not comply with XML Standard completely.</code>
 - <code>Note: This method currently generates valid xml documents by default. There is a severity level that determines whether the generated document will be valid or invalid when the generator creates a new document. You can change the severity level other than zero in the [server.js](/server.js) to get valid and invalid xml documents as below:</code>
